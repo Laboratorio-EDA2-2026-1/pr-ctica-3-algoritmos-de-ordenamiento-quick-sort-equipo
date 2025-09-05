@@ -97,7 +97,48 @@ int parsear_token(const char *tok, Destino *d) {
  *             una política simple, p. ej., el de menor índice.
  */
 int elegir_destino(const Destino *destinos, int n) {
-    // Escribe aquí tu función
+    int conocidos = 0, desconocidos = 0;
+    int max_conocido = -1;
+    double suma = 0.0;
+    
+    for (int i=0; i<n; i++){
+        if (destinos[i].es_conocido) {
+            conocidos++;
+            suma += destinos[i].costo;
+            if (destinos[i].costo > max_conocido) {
+                max_conocido = destinos[i].costo;
+            }
+            } 
+            else {
+            desconocidos++;
+        }
+    }
+
+    if (desconocidos > conocidos) {
+        int elegido = rand() % n;
+        while (destinos[elegido].es_conocido) { // aseguramos que sea letra
+            elegido = rand() % n;
+        }
+        return elegido;
+    }
+    
+    double media = suma/conocidos;
+
+    int valor_desconocido = max_conocido + 1;
+
+    int indice_elegido = -1;
+    double mejor_dist = 1e9;
+
+    for (int i = 0; i < n; i++) {
+        int valor = destinos[i].es_conocido ? destinos[i].costo : valor_desconocido;
+        double dist = fabs(valor - media);
+
+        if (dist < mejor_dist) {
+            mejor_dist = dist;
+            indice_elegido = i;
+        }
+    }
+     return indice_elegido;    
 
     // Sugerencias de variables que podrías usar:
     // int conocidos = 0, desconocidos = 0;
@@ -118,7 +159,7 @@ int elegir_destino(const Destino *destinos, int n) {
     // 4) Hallar el índice con distancia mínima a la media
     //      - manejar empates de forma determinista (p. ej., menor índice)
 
-    return -1; // Placeholder: reemplaza por el índice elegido
+    // Placeholder: reemplaza por el índice elegido
 }
 
 int main(void) {
